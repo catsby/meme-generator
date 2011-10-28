@@ -53,24 +53,21 @@ class TestMemeGenerator < Test::Unit::TestCase
     assert_equal false, generator.file_exist?
   end
 
-  def test_if_file_is_image
-    generator = MemeGenerator.new("test/support/image.jpg", "Top line", "Bottom line")
-    assert_equal true, generator.is_image?
-  end
-
   def should_fails_if_file_not_image
     generator = MemeGenerator.new("test/support/textfile", "Top line", "Bottom line")
-    assert_equal false, generator.is_image?
+    assert_raise Magick::ImageMagickError, generator.source_file
   end
 
   def test_should_create_image
     generator = MemeGenerator.new("test/support/image.jpg", "Top line", "Bottom line")
-    assert_equal true, generator.generate()
+    assert_not_nil generator.generate!
+
+    File.delete ("mem.jpg")
   end
 
   def test_image_must_be_same
     generator = MemeGenerator.new("test/support/image.jpg", "Top line", "Bottom line", "test/support/temporary.jpg")
-    generator.generate()
+    generator.generate!
 
 
     temporary_file  = Magick::ImageList.new("test/support/temporary.jpg")

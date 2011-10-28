@@ -15,33 +15,34 @@ class MemeGenerator
     File.file?(@source_filepath)
   end
 
-  def is_image?
-    @source_file = Magick::ImageList.new(@source_filepath)
-    !@source_file.nil?
+  def source_file
+    @source_file ||= Magick::ImageList.new(@source_filepath)
   end
 
-  def generate
-    false unless is_image?
-    meme = Magick::Draw.new()
-    meme.annotate(@source_file, 0, 0, 0, 60, @top_text.upcase) {
-      self.gravity = Magick::NorthGravity
-      self.pointsize = 52
-      self.stroke = 'transparent'
-      self.fill = '#ffffff'
-      self.font_weight = Magick::BoldWeight
-      self.font_family = "Impact"
-    }
-
-    meme.annotate(@source_file, 0, 0, 0, 60, @bottom_text.upcase) {
-      self.gravity = Magick::SouthGravity
-      self.pointsize = 52
-      self.stroke = 'transparent'
-      self.fill = '#ffffff'
-      self.font_weight = Magick::BoldWeight
-      self.font_family = "Impact"
-    }
-
-    !@source_file.write(@result_filepath).nil?
-
+  def meme
+    @meme ||= Magick::Draw.new()
   end
+
+  def generate!
+    set_default_meme
+
+    add_text Magick::NorthGravity, top_text
+    add_text Magick::SouthGravity, bottom_text
+    source_file.write(@result_filepath)
+  end
+
+  private
+
+    def set_default_meme
+      meme.pointsize = 52
+      meme.stroke = 'transparent'
+      meme.fill = '#ffffff'
+      meme.font_weight = Magick::BoldWeight
+      meme.font_family = "Impact"
+    end
+
+    def add_text(gravity, text)
+      meme.gravity = gravity
+      meme.annotate(source_file, 0, 0, 0, 60, text.upcase)
+    end
 end

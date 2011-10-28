@@ -42,5 +42,30 @@ class TestMemeGenerator < Test::Unit::TestCase
     generator = MemeGenerator.new("source.jpg", "Top line", "Bottom line")
     assert_equal "mem.jpg", generator.result_filepath
   end
+
+  def test_if_file_exist
+    generator = MemeGenerator.new("test/support/image.jpg", "Top line", "Bottom line")
+    assert_equal true, generator.file_exist?
+  end
+
+  def test_if_file_not_exist
+    generator = MemeGenerator.new("not_existing.jpg", "Top line", "Bottom line")
+    assert_equal false, generator.file_exist?
+  end
+
+  def test_if_file_is_image
+    generator = MemeGenerator.new("test/support/image.jpg", "Top line", "Bottom line")
+    assert_equal true, generator.is_image?
+  end
+
+  def should_fails_if_file_not_image
+    generator = MemeGenerator.new("test/support/textfile", "Top line", "Bottom line")
+    assert_equal false, generator.is_image?
+  end
+
+  def test_should_create_image
+    generator = MemeGenerator.new("test/support/image.jpg", "Top line", "Bottom line")
+    assert_equal true, generator.generate()
+  end
 end
 

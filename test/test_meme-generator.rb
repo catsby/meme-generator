@@ -67,5 +67,21 @@ class TestMemeGenerator < Test::Unit::TestCase
     generator = MemeGenerator.new("test/support/image.jpg", "Top line", "Bottom line")
     assert_equal true, generator.generate()
   end
+
+  def test_image_must_be_same
+    generator = MemeGenerator.new("test/support/image.jpg", "Top line", "Bottom line", "test/support/temporary.jpg")
+    generator.generate()
+
+
+    temporary_file  = Magick::ImageList.new("test/support/temporary.jpg")
+    result_file     = Magick::ImageList.new("test/support/result.jpg")
+
+    temporary_file.each_pixel do |pixel, x, y|
+      assert_equal true, false if result_file.pixel_color(x, y) != pixel
+    end
+
+    File.delete("test/support/temporary.jpg")
+    assert_equal true, true
+  end
 end
 

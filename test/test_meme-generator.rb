@@ -3,7 +3,7 @@ require 'helper'
 class TestMemeGenerator < Test::Unit::TestCase
 
   def setup
-    @generator = MemeGenerator.new("source.jpg", "Top line", "Bottom line", "result.jpg")
+    @generator = MemeGenerator.new("test/support/image.jpg", "Top line", "Bottom line", "test/support/temporary.jpg")
   end
 
   def test_should_create_object
@@ -23,7 +23,7 @@ class TestMemeGenerator < Test::Unit::TestCase
   end
   
   def test_get_source_filepath
-    assert_equal "source.jpg", @generator.source_filepath
+    assert_equal "test/support/image.jpg", @generator.source_filepath
   end
 
   def test_get_top_line
@@ -35,7 +35,7 @@ class TestMemeGenerator < Test::Unit::TestCase
   end
 
   def test_get_result_filepath
-    assert_equal "result.jpg", @generator.result_filepath
+    assert_equal "test/support/temporary.jpg", @generator.result_filepath
   end
 
   def test_default_result_filepath
@@ -66,19 +66,10 @@ class TestMemeGenerator < Test::Unit::TestCase
   end
 
   def test_image_must_be_same
-    generator = MemeGenerator.new("test/support/image.jpg", "Top line", "Bottom line", "test/support/temporary.jpg")
-    generator.generate!
-
-
-    temporary_file  = Magick::ImageList.new("test/support/temporary.jpg")
-    result_file     = Magick::ImageList.new("test/support/result.jpg")
-
-    temporary_file.each_pixel do |pixel, x, y|
-      assert_equal true, false if result_file.pixel_color(x, y) != pixel
-    end
+    @generator.generate!
+    assert_equal true, FileUtils.compare_file("test/support/temporary.jpg", "test/support/result.jpg")
 
     File.delete("test/support/temporary.jpg")
-    assert_equal true, true
   end
 end
 

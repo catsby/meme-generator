@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require 'console_generator'
+
+console = ConsoleGenerator.new(ARGV)
+console.run!

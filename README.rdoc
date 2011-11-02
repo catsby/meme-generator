@@ -4,7 +4,7 @@ Description goes here.
 
 == Usage
 
-    meme-generator <source file path> <top text line> <bottom text line> <result file path>
+    ./meme-generator <source file path> <top text line> <bottom text line> <result file path>
 
 === Copyright
 
